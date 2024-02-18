@@ -1,13 +1,10 @@
 import contextlib
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncConnection, async_sessionmaker,create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+
 
 from src.config.config import config
 
-
-class Base(DeclarativeBase):
-    pass
 
 
 class DatabaseSesssionManager:
