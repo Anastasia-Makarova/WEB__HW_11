@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import APIRouter, HTTPException, Depends, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,6 +40,14 @@ async def search_contact_by_email(contact_email: str, db: AsyncSession = Depends
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     return contact
+
+
+@router.get("/birthday", response_model=list[ContactResponse])
+async def get_contact_by_birthday(n: int = 7, db: AsyncSession = Depends(get_db)):
+    contacts = await repository_contacts.get_contact_by_birthday(n, db)
+    if contacts == []:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There are no birthdays within the given period")
+    return contacts
 
 
 @router.get('/{contact_id}', response_model=ContactResponse)
