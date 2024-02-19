@@ -10,6 +10,23 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession):
     contacts = await db.execute(stmt)
     return contacts.scalars().all()
 
+async def search_contact_by_name(contact_name: str, db: AsyncSession):
+    stmt = select(Contact).filter_by(name=contact_name)
+    contact = await db.execute(stmt)
+    return contact.scalars()
+
+
+async def search_contact_by_surname(contact_surname: str, db: AsyncSession):
+    stmt = select(Contact).filter_by(surname=contact_surname)
+    contact = await db.execute(stmt)
+    return contact.scalars()
+
+
+async def search_contact_by_email(contact_email: str, db: AsyncSession):
+    stmt = select(Contact).filter_by(email=contact_email)
+    contact = await db.execute(stmt)
+    return contact.scalar_one_or_none()
+
 
 async def get_contact(contact_id:int, db: AsyncSession):
     stmt = select(Contact).filter_by(id=contact_id)
@@ -51,3 +68,7 @@ async def delete_contact(contact_id:int, db: AsyncSession):
         await db.delete(contact)
         await db.commit()
     return contact
+
+
+
+  
