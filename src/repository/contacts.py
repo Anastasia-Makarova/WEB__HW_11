@@ -26,10 +26,28 @@ async def create_contact(body: ContactSchema, db: AsyncSession):
 
 
 
-async def update_contact():
-    pass
+async def update_contact(contact_id: int, body: ContactSchema, db: AsyncSession):
+    stmt = select(Contact).filter_by(id=contact_id)
+    result = await db.execute(stmt)
+    contact = result.scalar_one_or_none()
+    if contact:
+        contact.name = body.name
+        contact.surname = body.surname
+        contact.phone_number = body.phone_number
+        contact.email = body.email
+        contact.birthday = body.birthday
+        contact.notes = body.notes
+        await db.commit()
+        await db.refresh()
+    return contact
+    
 
 
-
-async def delete_contact():
-    pass
+async def delete_contact(contact_id:int, db: AsyncSession):
+    stmt = select(Contact).filter_by(id=contact_id)
+    contact = await db.execute(stmt)
+    contact = contact.scalar_one_or_none()
+    if contact:
+        await db.delete(contact)
+        await db.commit()
+    return contact
